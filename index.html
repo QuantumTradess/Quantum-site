@@ -920,8 +920,23 @@
   <div class="nav-actions">
     <a href="#join" class="btn-outline">Elite Login</a>
     <a href="https://discord.gg/xjzRP9SSNy" target="_blank" class="btn-solid">Apply VIP</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
   </div>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#hero" onclick="closeMenu()">Dashboard</a>
+  <a href="#mentorship" onclick="closeMenu()">Mentorship</a>
+  <a href="#tech" onclick="closeMenu()">Tech Stack</a>
+  <a href="#testimonials" onclick="closeMenu()">Reviews</a>
+  <a href="#calculator" onclick="closeMenu()">Calculator</a>
+  <a href="performance.html" onclick="closeMenu()">Performance</a>
+  <a href="#join" onclick="closeMenu()">Join Elite</a>
+  <a href="https://discord.gg/xjzRP9SSNy" target="_blank" class="mobile-discord">Apply VIP &#8594;</a>
+</div>
 
 <!-- HERO -->
 <section id="hero">
