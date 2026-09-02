@@ -757,7 +757,8 @@ document.querySelectorAll('.month-card').forEach(c=>barObs.observe(c));
 // BAR CHART
 const months=[
   {label:'Oct 25',wr:76.7},{label:'Nov 25',wr:85.7},{label:'Dec 25',wr:88.4},
-  {label:'Jan 26',wr:88.9},{label:'Apr 26',wr:67.0},{label:'May 26',wr:69.0},{label:'Jun 26',wr:77.2}
+  {label:'Jan 26',wr:88.9},{label:'Apr 26',wr:67.0},{label:'May 26',wr:69.0},{label:'Jun 26',wr:77.2},
+  {label:'Jul 26',wr:91.4},{label:'Aug 26',wr:89.5}
 ];
 const maxWR=Math.max(...months.map(m=>m.wr));
 const chartEl=document.getElementById('bars-chart');
