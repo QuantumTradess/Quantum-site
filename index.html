@@ -646,7 +646,7 @@
     .feature-card::after {
       content:''; position:absolute; inset:0;
       background:radial-gradient(circle at 50% 0%, rgba(0,245,160,0.04) 0%, transparent 60%);
-      opacity:0; transition:opacity .3s;
+      opacity:0; transition:opacity .3s; pointer-events:none;
     }
     .feature-card:hover { border-color:rgba(0,245,160,0.3); transform:translateY(-4px); box-shadow:0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,245,160,0.1); }
     .feature-card:hover::after { opacity:1; }
@@ -1076,6 +1076,7 @@
     <li><a href="#testimonials">Reviews</a></li>
     <li><a href="#calculator">Calculator</a></li>
     <li><a href="performance.html">Performance</a></li>
+    <li><a href="journal.html">Journal</a></li>
     <li><a href="#join">Join Elite</a></li>
   </ul>
   <div class="nav-actions">
@@ -1095,6 +1096,7 @@
   <a href="#testimonials" onclick="closeMenu()">Reviews</a>
   <a href="#calculator" onclick="closeMenu()">Calculator</a>
   <a href="performance.html" onclick="closeMenu()">Performance</a>
+  <a href="journal.html" onclick="closeMenu()">Free Journal</a>
   <a href="#join" onclick="closeMenu()">Join Elite</a>
   <a href="https://discord.gg/xjzRP9SSNy" target="_blank" class="mobile-discord">Apply VIP &#8594;</a>
 </div>
@@ -1213,8 +1215,8 @@
       <div class="feature-card reveal reveal-delay-3">
         <div class="card-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
         <div class="card-title">Performance Tracking Dashboard</div>
-        <p class="card-desc">Analyze trading stats, metrics, streaks, and journal setups automatically with our built-in tracking suite.</p>
-        
+        <p class="card-desc">Free trading journal: log your trades and get win rate, profit factor, streaks, drawdown and an equity curve instantly. Your data stays private in your browser.</p>
+        <a href="journal.html" class="card-link">Open Tracker →</a>
       </div>
     </div>
   </div>
@@ -1522,6 +1524,7 @@
     <a href="https://discord.gg/xjzRP9SSNy" target="_blank">Discord</a>
     <a href="#mentorship">Mentorship</a>
     <a href="#tech">Tech Stack</a>
+    <a href="journal.html">Free Journal</a>
   </div>
 </footer>
 
