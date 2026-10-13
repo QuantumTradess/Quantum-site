@@ -173,6 +173,21 @@
     .b-be{background:rgba(255,180,0,0.12);color:var(--amber);}
     .b-dir{background:rgba(255,255,255,0.06);color:var(--text);}
     .log-table td.note{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);}
+    .shotbox{border:1.5px dashed rgba(255,255,255,0.18);border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;color:var(--muted);font-size:14px;min-height:56px;transition:border-color .2s,background .2s;background:rgba(0,0,0,0.18);}
+    .shotbox:hover,.shotbox:focus-visible,.shotbox.drag{border-color:var(--green);background:rgba(0,245,160,0.05);outline:none;}
+    .shotbox b{color:var(--white);font-weight:600;}
+    .shotbox svg{width:22px;height:22px;stroke:var(--green);fill:none;stroke-width:1.8;flex:none;}
+    .shotprev{display:none;align-items:center;gap:12px;border:1px solid var(--border);border-radius:10px;padding:8px;background:rgba(0,0,0,0.28);}
+    .shotprev img{width:96px;height:60px;object-fit:cover;border-radius:6px;display:block;}
+    .shotprev span{flex:1;font-size:13px;color:var(--muted);}
+    .thumb{padding:0;border:1px solid var(--border);border-radius:6px;background:#000;cursor:zoom-in;display:block;overflow:hidden;width:56px;height:36px;transition:border-color .2s;}
+    .thumb:hover,.thumb:focus-visible{border-color:var(--green);outline:none;}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+    #lightbox{position:fixed;inset:0;z-index:3000;background:rgba(2,4,8,0.92);display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:12px;}
+    #lightbox.show{display:flex;}
+    #lightbox img{max-width:100%;max-height:calc(100vh - 110px);border-radius:10px;border:1px solid var(--border);}
+    #lightbox .cap{color:var(--white);font-size:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;}
+    #lightbox .x{position:absolute;top:12px;right:12px;width:44px;height:44px;border-radius:10px;border:1px solid var(--border);background:#0c1220;color:var(--white);font-size:22px;cursor:pointer;}
     .icon-btn{width:38px;height:38px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;transition:all .2s;}
     .icon-btn:hover{color:var(--red);border-color:rgba(255,77,109,0.4);background:rgba(255,77,109,0.08);}
     .more{text-align:center;margin-top:16px;}
@@ -230,7 +245,7 @@
       .tool-actions .btn{flex:1;}
       .log-table thead{display:none;}
       .log-table,.log-table tbody{display:block;width:100%;}
-      .log-table tr{display:grid;grid-template-columns:auto auto auto 1fr auto;grid-template-areas:"pair dir res r act" "date date setup setup setup" "note note note note note";gap:6px 8px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:10px 8px 10px 14px;margin-bottom:8px;background:rgba(255,255,255,0.02);}
+      .log-table tr{display:grid;grid-template-columns:auto auto auto 1fr auto;grid-template-areas:"pair dir res r act" "date date setup setup setup" "note note note note note" "shot shot shot shot shot";gap:6px 8px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:10px 8px 10px 14px;margin-bottom:8px;background:rgba(255,255,255,0.02);}
       .log-table td{display:block;padding:0;border:none;text-align:left;font-size:13px;}
       .log-table td::before{content:none;}
       .log-table td:nth-child(1){grid-area:date;color:var(--muted);font-size:12px;}
@@ -240,7 +255,9 @@
       .log-table td:nth-child(5){grid-area:r;text-align:right;font-size:16px;}
       .log-table td:nth-child(6){grid-area:setup;text-align:right;color:var(--muted);font-size:12px;}
       .log-table td:nth-child(7){grid-area:note;max-width:none;white-space:normal;font-size:12px;}
-      .log-table td.empty{display:none;}
+      .log-table td.shot{grid-area:shot;}
+      .log-table td.shot .thumb{width:100%;height:auto;aspect-ratio:16/7;}
+      .log-table td.empty,.log-table td.shot.empty{display:none;}
       .log-table td.act{grid-area:act;justify-self:end;}
       .log-table tr.none{display:block;border:none;background:none;padding:0;}
       .log-table tr.none td{display:block;}
@@ -283,7 +300,6 @@
     <li><a href="index.html#testimonials">Reviews</a></li>
     <li><a href="performance.html">Performance</a></li>
     <li><a href="journal.html" class="active">Journal</a></li>
-    <li><a href="journal.html">Journal</a></li>
     <li><a href="index.html#join">Join Elite</a></li>
   </ul>
   <div style="display:flex;gap:12px;align-items:center;">
@@ -345,6 +361,15 @@
       <div class="field f5">
         <label class="lbl" for="fNote">Note (optional)</label>
         <input class="inp" type="text" id="fNote" placeholder="What did you see? What would you repeat?" maxlength="200">
+      </div>
+      <div class="field f12" style="grid-column:1/-1">
+        <label class="lbl" id="lblShot">Chart screenshot (optional)</label>
+        <div class="shotbox" id="shotBox" role="button" tabindex="0" aria-labelledby="lblShot">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l2-2h6l2 2h3v12H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          <span><b>Paste</b> your TradingView screenshot (Ctrl+V), drop it here, or tap to upload</span>
+        </div>
+        <div class="shotprev" id="shotPrev"><img id="shotImg" alt="Screenshot preview"><span id="shotInfo"></span><button class="btn btn-ghost btn-sm" type="button" id="shotRm">Remove</button></div>
+        <input type="file" id="fShot" accept="image/*" hidden>
       </div>
     </div>
     <div class="form-actions">
@@ -422,6 +447,7 @@
   <p class="disclaimer">For record-keeping and education only. Not financial advice. Past results do not guarantee future performance. Your journal is stored only in this browser on this device; clearing site data deletes it, so export a CSV backup regularly.</p>
 </main>
 
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Trade screenshot"><button class="x" type="button" id="lbX" aria-label="Close">×</button><img id="lbImg" alt="Trade chart screenshot"><div class="cap" id="lbCap"></div></div>
 <div id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button type="button" id="toastBtn" hidden></button></div>
 
 <footer>
@@ -489,6 +515,7 @@ function cleanTrade(t){
     note:String(t.note||'').trim().slice(0,200)
   };
   if(t.s)out.s=1;
+  if(t.img)out.img=1;
   return out;
 }
 
@@ -643,8 +670,8 @@ function renderBreakdown(sel,rows,label){
 function renderLog(list){
   var rows=list.slice().reverse();
   var shown=showAll?rows:rows.slice(0,25);
-  var head='<thead><tr><th>Date</th><th>Pair</th><th>Dir</th><th>Result</th><th class="num">R</th><th>Setup</th><th>Note</th><th></th></tr></thead>';
-  if(!rows.length){$('#logTable').innerHTML=head+'<tbody><tr class="none"><td colspan="8" class="empty-row">No trades in this view yet. Add one above or load sample data.</td></tr></tbody>';$('#more').hidden=true;return;}
+  var head='<thead><tr><th>Date</th><th>Pair</th><th>Dir</th><th>Result</th><th class="num">R</th><th>Setup</th><th>Note</th><th>Chart</th><th></th></tr></thead>';
+  if(!rows.length){$('#logTable').innerHTML=head+'<tbody><tr class="none"><td colspan="9" class="empty-row">No trades in this view yet. Add one above or load sample data.</td></tr></tbody>';$('#more').hidden=true;return;}
   $('#logTable').innerHTML=head+'<tbody>'+shown.map(function(t){
     var bc=t.result==='Win'?'b-win':(t.result==='Loss'?'b-loss':'b-be');
     return '<tr>'
@@ -655,9 +682,11 @@ function renderLog(list){
       +'<td data-label="R" class="num '+(t.r>0?'pos':(t.r<0?'neg':''))+'">'+fmtR(t.r)+'</td>'
       +'<td data-label="Setup">'+(t.setup?esc(t.setup):'<span style="color:var(--muted)">—</span>')+'</td>'
       +(t.note?'<td data-label="Note" class="note" title="'+esc(t.note)+'">'+esc(t.note)+'</td>':'<td data-label="Note" class="note empty">—</td>')
+      +(t.img?'<td data-label="Chart" class="shot"><button class="thumb" type="button" data-shot="'+esc(t.id)+'" aria-label="View chart screenshot for '+esc(t.pair)+' '+esc(t.date)+'"></button></td>':'<td class="shot empty"><span style="color:var(--muted)">—</span></td>')
       +'<td class="act"><button class="icon-btn" type="button" data-del="'+esc(t.id)+'" aria-label="Delete trade '+esc(t.pair)+' '+esc(t.date)+'">×</button></td>'
       +'</tr>';
   }).join('')+'</tbody>';
+  hydrateThumbs();
   var more=$('#more');more.hidden=rows.length<=25;
   $('#btnMore').textContent=showAll?'Show Fewer':'Show All '+rows.length+' Trades';
 }
@@ -693,6 +722,87 @@ function toast(msg,actionLabel,fn){
   clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove('show');},actionLabel?6000:3200);
 }
 
+/* ---------- screenshots (IndexedDB, in-memory fallback) ---------- */
+var dbp=null, memImgs={}, pending=null, thumbURLs=[], MAX_SHOT_BYTES=15*1024*1024;
+function openDB(){
+  if(dbp)return dbp;
+  dbp=new Promise(function(res){
+    try{
+      var rq=indexedDB.open('qt_journal_shots',1);
+      rq.onupgradeneeded=function(){rq.result.createObjectStore('shots');};
+      rq.onsuccess=function(){res(rq.result);};
+      rq.onerror=rq.onblocked=function(){res(null);};
+    }catch(e){res(null);}
+  });
+  return dbp;
+}
+function idb(mode,fn){
+  return openDB().then(function(db){
+    if(!db)return {fail:true};
+    return new Promise(function(res){
+      try{
+        var tx=db.transaction('shots',mode),st=tx.objectStore('shots'),out=fn(st);
+        tx.oncomplete=function(){res({v:out&&out.result});};
+        tx.onerror=tx.onabort=function(){res({fail:true});};
+      }catch(e){res({fail:true});}
+    });
+  });
+}
+function putImg(id,blob){return idb('readwrite',function(st){return st.put(blob,id);}).then(function(r){if(r.fail){memImgs[id]=blob;}return !r.fail;});}
+function getImg(id){return idb('readonly',function(st){return st.get(id);}).then(function(r){return (r.v)||memImgs[id]||null;});}
+function delImg(id){delete memImgs[id];return idb('readwrite',function(st){return st.delete(id);});}
+function clearImgs(){memImgs={};return idb('readwrite',function(st){return st.clear();});}
+function shrink(file){
+  return new Promise(function(res,rej){
+    if(!file||!/^image\//.test(file.type)){rej(new Error('That is not an image file.'));return;}
+    if(file.size>MAX_SHOT_BYTES){rej(new Error('Image is too large (max 15 MB).'));return;}
+    var url=URL.createObjectURL(file),im=new Image();
+    im.onload=function(){
+      var w=im.naturalWidth,h=im.naturalHeight,m=1600,k=Math.min(1,m/Math.max(w,h));
+      var c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*k));c.height=Math.max(1,Math.round(h*k));
+      var cx=c.getContext('2d');cx.fillStyle='#0c1220';cx.fillRect(0,0,c.width,c.height);cx.drawImage(im,0,0,c.width,c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob(function(b){b?res(b):rej(new Error('Could not process that image.'));},'image/jpeg',0.82);
+    };
+    im.onerror=function(){URL.revokeObjectURL(url);rej(new Error('Could not read that image.'));};
+    im.src=url;
+  });
+}
+function setPending(blob){
+  if(pending&&pending.url)URL.revokeObjectURL(pending.url);
+  if(!blob){pending=null;$('#shotPrev').style.display='none';$('#shotBox').style.display='flex';return;}
+  pending={blob:blob,url:URL.createObjectURL(blob)};
+  $('#shotImg').src=pending.url;
+  $('#shotInfo').textContent='Screenshot ready ('+Math.max(1,Math.round(blob.size/1024))+' KB)';
+  $('#shotPrev').style.display='flex';$('#shotBox').style.display='none';
+}
+function takeFile(file){
+  shrink(file).then(setPending).catch(function(e){toast(e.message||'Could not add that image.');});
+}
+function hydrateThumbs(){
+  thumbURLs.forEach(function(u){URL.revokeObjectURL(u);});thumbURLs=[];
+  Array.prototype.forEach.call(document.querySelectorAll('#logTable [data-shot]'),function(b){
+    getImg(b.getAttribute('data-shot')).then(function(blob){
+      if(!blob){var td=b.closest('td');if(td){td.classList.add('empty');td.innerHTML='<span style="color:var(--muted)">—</span>';}return;}
+      var u=URL.createObjectURL(blob);thumbURLs.push(u);
+      var im=document.createElement('img');im.alt='';im.src=u;b.appendChild(im);
+    });
+  });
+}
+var lbURL=null;
+function openShot(id){
+  var t=trades.find(function(x){return x.id===id;});
+  getImg(id).then(function(blob){
+    if(!blob||!t){toast('Screenshot not found in this browser.');return;}
+    if(lbURL)URL.revokeObjectURL(lbURL);
+    lbURL=URL.createObjectURL(blob);$('#lbImg').src=lbURL;
+    var bc=t.result==='Win'?'b-win':(t.result==='Loss'?'b-loss':'b-be');
+    $('#lbCap').innerHTML='<b>'+esc(t.pair)+'</b><span>'+esc(t.date)+'</span><span class="badge '+bc+'">'+esc(t.result)+'</span><span class="'+(t.r>0?'pos':(t.r<0?'neg':''))+'">'+fmtR(t.r)+'</span>'+(t.setup?'<span style="color:var(--muted)">'+esc(t.setup)+'</span>':'');
+    $('#lightbox').classList.add('show');$('#lbX').focus();
+  });
+}
+function closeShot(){$('#lightbox').classList.remove('show');$('#lbImg').removeAttribute('src');if(lbURL){URL.revokeObjectURL(lbURL);lbURL=null;}}
+
 /* ---------- form ---------- */
 function selectedRes(){return document.querySelector('input[name="res"]:checked').value;}
 function applyResultDefaults(){
@@ -717,8 +827,12 @@ function addTrade(ev){
   if(!t){msg.textContent='Could not add that trade. Check the fields.';return;}
   var hadSample=trades.some(function(x){return x.s;});
   if(hadSample)trades=trades.filter(function(x){return !x.s;});
+  var shot=pending;
+  if(shot)t.img=1;
   trades.push(t);save();
   $('#fNote').value='';$('#fSetup').value='';
+  setPending(null);
+  if(shot)putImg(t.id,shot.blob).then(function(ok){if(!ok)toast('Trade added. Screenshot is kept for this session only (browser storage blocked).');});
   render();
   toast(hadSample?'Trade added. Sample data cleared.':'Trade added.');
   $('#fPair').focus();
@@ -728,17 +842,22 @@ function addTrade(ev){
 function deleteTrade(id){
   var idx=trades.findIndex(function(t){return t.id===id;});
   if(idx<0)return;
-  lastDeleted={t:trades[idx],i:idx};
+  var tr=trades[idx];
+  lastDeleted={t:tr,i:idx,blob:null};
+  var held=lastDeleted;
   trades.splice(idx,1);save();render();
+  if(tr.img)getImg(tr.id).then(function(b){held.blob=b;return delImg(tr.id);});
   toast('Trade deleted.','Undo',function(){
     if(!lastDeleted)return;
-    trades.splice(Math.min(lastDeleted.i,trades.length),0,lastDeleted.t);lastDeleted=null;save();render();
+    var d=lastDeleted;lastDeleted=null;
+    trades.splice(Math.min(d.i,trades.length),0,d.t);save();
+    if(d.blob)putImg(d.t.id,d.blob).then(render);else render();
   });
 }
 function clearAll(){
   if(!trades.length){toast('Nothing to clear.');return;}
   if(!window.confirm('Delete all '+trades.length+' trades from this browser? Export a CSV first if you want a backup.'))return;
-  trades=[];save();render();toast('Journal cleared.');
+  trades=[];save();clearImgs();render();toast('Journal cleared.');
 }
 
 /* ---------- sample data ---------- */
@@ -775,7 +894,7 @@ function exportCSV(){
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='qt-journal-'+today()+'.csv';
   document.body.appendChild(a);a.click();document.body.removeChild(a);
   setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
-  toast('Exported '+real.length+' trades.');
+  toast('Exported '+real.length+' trades.'+(real.some(function(t){return t.img;})?' Screenshots stay in this browser and are not in the CSV.':''));
 }
 function parseCSV(text){
   text=text.replace(/^﻿/,'');
@@ -830,6 +949,23 @@ function init(){
   $('#tradeForm').addEventListener('submit',addTrade);
   Array.prototype.forEach.call(document.querySelectorAll('input[name="res"]'),function(r){r.addEventListener('change',applyResultDefaults);});
   $('#fRR').addEventListener('input',function(){rrTouched=true;});
+  var box=$('#shotBox');
+  box.addEventListener('click',function(){$('#fShot').click();});
+  box.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#fShot').click();}});
+  $('#fShot').addEventListener('change',function(e){if(e.target.files[0])takeFile(e.target.files[0]);e.target.value='';});
+  $('#shotRm').addEventListener('click',function(){setPending(null);});
+  ['dragenter','dragover'].forEach(function(n){box.addEventListener(n,function(e){e.preventDefault();box.classList.add('drag');});});
+  ['dragleave','drop'].forEach(function(n){box.addEventListener(n,function(e){e.preventDefault();box.classList.remove('drag');});});
+  box.addEventListener('drop',function(e){var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)takeFile(f);});
+  document.addEventListener('paste',function(e){
+    var items=(e.clipboardData&&e.clipboardData.items)||[];
+    for(var i=0;i<items.length;i++){
+      if(items[i].kind==='file'&&/^image\//.test(items[i].type)){var f=items[i].getAsFile();if(f){e.preventDefault();takeFile(f);toast('Screenshot pasted.');return;}}
+    }
+  });
+  $('#lbX').addEventListener('click',closeShot);
+  $('#lightbox').addEventListener('click',function(e){if(e.target===this)closeShot();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeShot();});
   $('#period').addEventListener('click',function(e){
     var b=e.target.closest('.ptab');if(!b)return;
     period=b.getAttribute('data-period');
@@ -837,6 +973,7 @@ function init(){
     showAll=false;render();
   });
   $('#logTable').addEventListener('click',function(e){
+    var sh=e.target.closest('[data-shot]');if(sh){openShot(sh.getAttribute('data-shot'));return;}
     var b=e.target.closest('[data-del]');if(b)deleteTrade(b.getAttribute('data-del'));
   });
   $('#btnMore').addEventListener('click',function(){showAll=!showAll;render();});
