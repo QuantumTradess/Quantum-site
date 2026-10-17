@@ -9,7 +9,7 @@
   <meta name="keywords" content="free trading journal, trade tracker, forex journal, win rate calculator, profit factor, trading performance tracker, equity curve, prop firm journal, QuantumTrades">
   <meta name="robots" content="index, follow">
   <meta property="og:title" content="Free Trading Journal & Performance Tracker — QuantumTrades">
-  <meta property="og:description" content="Log your trades and see win rate, profit factor, streaks, drawdown and your equity curve. Free, private, no signup.">
+  <meta property="og:description" content="Log your trades and see win rate, profit factor, streaks, drawdown and your equity curve. Free and private. Sign in to sync across devices.">
   <meta property="og:url" content="https://quantumtrades-official.netlify.app/journal.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="QuantumTrades">
@@ -18,7 +18,7 @@
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Free Trading Journal & Performance Tracker — QuantumTrades">
-  <meta name="twitter:description" content="Log your trades and see win rate, profit factor, streaks, drawdown and your equity curve. Free, private, no signup.">
+  <meta name="twitter:description" content="Log your trades and see win rate, profit factor, streaks, drawdown and your equity curve. Free and private. Sign in to sync across devices.">
   <meta name="twitter:image" content="https://quantumtrades-official.netlify.app/og-image.png">
   <link rel="canonical" href="https://quantumtrades-official.netlify.app/journal.html">
   <script type="application/ld+json">
@@ -173,6 +173,23 @@
     .b-be{background:rgba(255,180,0,0.12);color:var(--amber);}
     .b-dir{background:rgba(255,255,255,0.06);color:var(--text);}
     .log-table td.note{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);}
+    .authbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin:0 0 24px;background:rgba(12,18,32,.78);font-size:14px;color:var(--muted);}
+    .authbar .who{color:var(--white);font-weight:600;word-break:break-all;}
+    .authbar .st{display:inline-flex;align-items:center;gap:6px;font-size:12px;}
+    .authbar .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);}
+    .authbar .dot.off{background:var(--amber);box-shadow:none;}
+    .authbar .sp{flex:1;}
+    #authModal{position:fixed;inset:0;z-index:3500;background:rgba(2,4,8,0.88);display:none;align-items:center;justify-content:center;padding:16px;}
+    #authModal.show{display:flex;}
+    #authModal .box{width:100%;max-width:400px;background:#0c1220;border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;}
+    #authModal h3{font-family:'Space Grotesk',sans-serif;font-size:20px;color:var(--white);margin-bottom:6px;}
+    #authModal p.sub{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5;}
+    #authModal .field{margin-bottom:12px;}
+    #authModal .amsg{min-height:20px;font-size:13px;color:var(--red);margin:4px 0 10px;}
+    #authModal .amsg.ok{color:var(--green);}
+    #authModal .links{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px;font-size:13px;}
+    #authModal .links button{background:none;border:none;color:var(--green);cursor:pointer;font-size:13px;padding:6px 0;font-family:'Inter',sans-serif;}
+    #authModal .ax{position:absolute;top:10px;right:10px;width:36px;height:36px;border:none;background:none;color:var(--muted);font-size:22px;cursor:pointer;}
     .shotbox{border:1.5px dashed rgba(255,255,255,0.18);border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;color:var(--muted);font-size:14px;min-height:56px;transition:border-color .2s,background .2s;background:rgba(0,0,0,0.18);}
     .shotbox:hover,.shotbox:focus-visible,.shotbox.drag{border-color:var(--green);background:rgba(0,245,160,0.05);outline:none;}
     .shotbox b{color:var(--white);font-weight:600;}
@@ -312,9 +329,9 @@
   <header>
     <div class="eyebrow reveal">Free Trader Tool</div>
     <h1 class="page-title reveal">Trading Journal &amp; <span>Performance Tracker</span></h1>
-    <p class="page-sub reveal">Log every trade and instantly see your win rate, profit factor, streaks, drawdown and equity curve. No signup, no cost. Review your edge the way funded traders do.</p>
+    <p class="page-sub reveal">Log every trade and instantly see your win rate, profit factor, streaks, drawdown and equity curve. Free to use, sign in to sync across devices. Review your edge the way funded traders do.</p>
     <div class="pills reveal">
-      <span class="pill-note"><b>Private:</b> data stays in this browser</span>
+      <span class="pill-note"><b>Private:</b> only your account can see your trades</span>
       <span class="pill-note"><b>Backup:</b> export / import CSV anytime</span>
       <span class="pill-note"><b>Works on:</b> phone &amp; desktop</span>
     </div>
@@ -322,6 +339,12 @@
   </header>
 
   <!-- LOG A TRADE -->
+  <div class="authbar reveal" id="authBar">
+    <span id="authText">Guest mode: your trades are saved in this browser only.</span>
+    <span class="sp"></span>
+    <button class="btn btn-primary btn-sm" type="button" id="btnSignIn">Sign in / Sign up</button>
+    <button class="btn btn-ghost btn-sm" type="button" id="btnSignOut" hidden>Sign out</button>
+  </div>
   <div class="section-label reveal">Log a Trade</div>
   <form class="card reveal" id="tradeForm" autocomplete="off" novalidate>
     <div class="form-grid">
@@ -444,9 +467,21 @@
     </div>
   </section>
 
-  <p class="disclaimer">For record-keeping and education only. Not financial advice. Past results do not guarantee future performance. Your journal is stored only in this browser on this device; clearing site data deletes it, so export a CSV backup regularly.</p>
+  <p class="disclaimer">For record-keeping and education only. Not financial advice. Past results do not guarantee future performance. In guest mode your journal is stored only in this browser; clearing site data deletes it, so export a CSV backup regularly. If you sign in, your email and trades are stored with our provider Supabase and are readable only by your account. Screenshots stay on the device where you added them.</p>
 </main>
 
+<div id="authModal" role="dialog" aria-modal="true" aria-labelledby="amTitle"><div class="box">
+  <button class="ax" type="button" id="amX" aria-label="Close">×</button>
+  <h3 id="amTitle">Sign in</h3>
+  <p class="sub" id="amSub">Sync your journal across phone and laptop.</p>
+  <form id="amForm" novalidate>
+    <div class="field" id="amEmailF"><label class="lbl" for="amEmail">Email</label><input class="inp" type="email" id="amEmail" autocomplete="email" inputmode="email" maxlength="254"></div>
+    <div class="field" id="amPassF"><label class="lbl" for="amPass">Password</label><input class="inp" type="password" id="amPass" autocomplete="current-password" maxlength="72"></div>
+    <div class="amsg" id="amMsg" role="alert"></div>
+    <button class="btn btn-primary" type="submit" id="amSubmit" style="width:100%">Sign in</button>
+  </form>
+  <div class="links"><button type="button" id="amSwitch">Create an account</button><button type="button" id="amForgot">Forgot password?</button></div>
+</div></div>
 <div id="lightbox" role="dialog" aria-modal="true" aria-label="Trade screenshot"><button class="x" type="button" id="lbX" aria-label="Close">×</button><img id="lbImg" alt="Trade chart screenshot"><div class="cap" id="lbCap"></div></div>
 <div id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button type="button" id="toastBtn" hidden></button></div>
 
@@ -460,6 +495,7 @@
   </div>
 </footer>
 
+<script src="supabase.js"></script>
 <script>
 (function(){
 'use strict';
@@ -803,6 +839,137 @@ function openShot(id){
 }
 function closeShot(){$('#lightbox').classList.remove('show');$('#lbImg').removeAttribute('src');if(lbURL){URL.revokeObjectURL(lbURL);lbURL=null;}}
 
+/* ---------- accounts & cloud sync (Supabase) ---------- */
+var SB_URL='https://vcnsbmfxjdeqlncxiqwk.supabase.co', SB_KEY='sb_publishable_cBmOMUVxDsPukqcmvudxNg_Zayv9_Cg';
+var sb=null, user=null, syncedFor=null, amMode='in';
+function toRow(t){return {user_id:user.id,id:t.id,date:t.date,pair:t.pair,dir:t.dir,result:t.result,r:t.r,setup:t.setup,note:t.note,img:!!t.img};}
+function fromRow(r){return cleanTrade({id:r.id,date:r.date,pair:r.pair,dir:r.dir,result:r.result,r:r.r,setup:r.setup,note:r.note,img:r.img?1:0});}
+function setAuthUI(state){
+  var on=!!user;
+  $('#btnSignIn').hidden=on;$('#btnSignOut').hidden=!on;
+  var el=$('#authText');
+  if(!sb){el.textContent='Guest mode: your trades are saved in this browser only. (Sign-in is unavailable right now.)';$('#btnSignIn').hidden=true;return;}
+  if(!on){el.textContent='Guest mode: your trades are saved in this browser only. Sign in to sync across devices.';return;}
+  el.innerHTML='Signed in as <span class="who">'+esc(user.email||'')+'</span> <span class="st"><span class="dot'+(state==='error'?' off':'')+'"></span>'+(state==='syncing'?'Syncing…':(state==='error'?'Not synced':'Synced'))+'</span>';
+}
+function syncFail(){setAuthUI('error');toast('Could not sync. Saved on this device and will sync next time you sign in.');}
+function syncUpsert(list){
+  if(!sb||!user||!list.length)return Promise.resolve();
+  var rows=list.filter(function(t){return !t.s;}).map(toRow),jobs=[];
+  for(var i=0;i<rows.length;i+=500){jobs.push(sb.from('trades').upsert(rows.slice(i,i+500),{onConflict:'user_id,id'}));}
+  return Promise.all(jobs).then(function(rs){if(rs.some(function(r){return r.error;}))syncFail();else setAuthUI('ok');}).catch(syncFail);
+}
+function syncDelete(ids){
+  if(!sb||!user||!ids.length)return Promise.resolve();
+  return sb.from('trades').delete().in('id',ids).then(function(r){if(r.error)syncFail();else setAuthUI('ok');},syncFail);
+}
+function syncClear(){
+  if(!sb||!user)return Promise.resolve();
+  return sb.from('trades').delete().eq('user_id',user.id).then(function(r){if(r.error)syncFail();else setAuthUI('ok');},syncFail);
+}
+function fetchAll(){
+  var out=[];
+  function page(from){
+    return sb.from('trades').select('*').order('date',{ascending:true}).range(from,from+999).then(function(r){
+      if(r.error)throw r.error;
+      out=out.concat(r.data||[]);
+      return (r.data&&r.data.length===1000&&out.length<MAX_TRADES)?page(from+1000):out;
+    });
+  }
+  return page(0);
+}
+function reconcile(){
+  setAuthUI('syncing');
+  return fetchAll().then(function(rows){
+    var remote=rows.map(fromRow).filter(Boolean),ids={};
+    remote.forEach(function(t){ids[t.id]=1;});
+    var local=trades.filter(function(t){return !t.s&&!ids[t.id];});
+    var merged=remote.concat(local).slice(0,MAX_TRADES);
+    return syncUpsert(local).then(function(){
+      trades=merged;save();render();
+      setAuthUI('ok');
+      if(local.length)toast('Synced. '+local.length+' trade'+(local.length===1?'':'s')+' from this device added to your account.');
+    });
+  }).catch(function(){syncFail();});
+}
+function onSession(session){
+  var u=session&&session.user?session.user:null;
+  if(!u){
+    if(user){user=null;syncedFor=null;trades=[];save();render();}
+    user=null;setAuthUI();return;
+  }
+  user=u;
+  if(syncedFor===u.id){setAuthUI('ok');return;}
+  syncedFor=u.id;closeAuth();reconcile();
+}
+function initAuth(){
+  if(!window.supabase||!window.supabase.createClient){setAuthUI();return;}
+  try{
+    sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:storageOK,autoRefreshToken:true,detectSessionInUrl:true}});
+  }catch(e){sb=null;setAuthUI();return;}
+  setAuthUI();
+  sb.auth.onAuthStateChange(function(ev,session){
+    setTimeout(function(){
+      if(ev==='PASSWORD_RECOVERY'){openAuth('reset');return;}
+      if(ev==='INITIAL_SESSION'||ev==='SIGNED_IN'||ev==='SIGNED_OUT'||ev==='USER_UPDATED')onSession(session);
+    },0);
+  });
+  $('#btnSignIn').addEventListener('click',function(){openAuth('in');});
+  $('#btnSignOut').addEventListener('click',function(){
+    sb.auth.signOut().then(function(){toast('Signed out. Your trades are safe in your account.');});
+  });
+  $('#amX').addEventListener('click',closeAuth);
+  $('#authModal').addEventListener('click',function(e){if(e.target===this)closeAuth();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAuth();});
+  $('#amSwitch').addEventListener('click',function(){openAuth(amMode==='in'?'up':'in');});
+  $('#amForgot').addEventListener('click',function(){openAuth('forgot');});
+  $('#amForm').addEventListener('submit',submitAuth);
+}
+function amMsg(t,ok){var m=$('#amMsg');m.textContent=t||'';m.className='amsg'+(ok?' ok':'');}
+function openAuth(mode){
+  amMode=mode;amMsg('');
+  var T={in:['Sign in','Welcome back. Sign in to load your journal.','Sign in','Create an account'],
+         up:['Create account','Free. Your trades sync across your phone and laptop.','Create account','I already have an account'],
+         forgot:['Reset password','Enter your email and we will send you a reset link.','Send reset link','Back to sign in'],
+         reset:['New password','Choose a new password for your account.','Update password','Back to sign in']}[mode];
+  $('#amTitle').textContent=T[0];$('#amSub').textContent=T[1];$('#amSubmit').textContent=T[2];$('#amSwitch').textContent=T[3];
+  $('#amEmailF').hidden=(mode==='reset');$('#amPassF').hidden=(mode==='forgot');
+  $('#amForgot').hidden=(mode!=='in');
+  $('#amPass').setAttribute('autocomplete',mode==='in'?'current-password':'new-password');
+  if(mode==='reset')$('#amSwitch').hidden=true;else $('#amSwitch').hidden=false;
+  $('#authModal').classList.add('show');
+  setTimeout(function(){(mode==='reset'?$('#amPass'):$('#amEmail')).focus();},30);
+}
+function closeAuth(){$('#authModal').classList.remove('show');$('#amPass').value='';}
+function friendlyErr(e){
+  var m=(e&&e.message)||'';
+  if(/invalid login/i.test(m))return 'Wrong email or password.';
+  if(/already registered|already been registered/i.test(m))return 'That email already has an account. Try signing in.';
+  if(/rate limit|too many/i.test(m))return 'Too many attempts. Please wait a few minutes and try again.';
+  if(/network|fetch/i.test(m))return 'Network problem. Check your connection and try again.';
+  if(/password/i.test(m))return m;
+  return 'Something went wrong. Please try again.';
+}
+function submitAuth(ev){
+  ev.preventDefault();
+  var email=$('#amEmail').value.trim(),pass=$('#amPass').value,btn=$('#amSubmit');
+  if(amMode!=='reset'&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){amMsg('Enter a valid email address.');return;}
+  if((amMode==='in'||amMode==='up'||amMode==='reset')&&pass.length<(amMode==='in'?1:8)){amMsg(amMode==='in'?'Enter your password.':'Password must be at least 8 characters.');return;}
+  btn.disabled=true;amMsg('');
+  var p;
+  if(amMode==='in')p=sb.auth.signInWithPassword({email:email,password:pass});
+  else if(amMode==='up')p=sb.auth.signUp({email:email,password:pass});
+  else if(amMode==='forgot')p=sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+  else p=sb.auth.updateUser({password:pass});
+  p.then(function(r){
+    btn.disabled=false;
+    if(r.error){amMsg(friendlyErr(r.error));return;}
+    if(amMode==='forgot'){amMsg('If that email has an account, a reset link is on its way.',true);return;}
+    if(amMode==='reset'){amMsg('Password updated.',true);setTimeout(closeAuth,900);return;}
+    if(amMode==='up'&&!(r.data&&r.data.session)){amMsg('Check your email to confirm your account, then sign in.',true);return;}
+  }).catch(function(e){btn.disabled=false;amMsg(friendlyErr(e));});
+}
+
 /* ---------- form ---------- */
 function selectedRes(){return document.querySelector('input[name="res"]:checked').value;}
 function applyResultDefaults(){
@@ -829,7 +996,7 @@ function addTrade(ev){
   if(hadSample)trades=trades.filter(function(x){return !x.s;});
   var shot=pending;
   if(shot)t.img=1;
-  trades.push(t);save();
+  trades.push(t);save();syncUpsert([t]);
   $('#fNote').value='';$('#fSetup').value='';
   setPending(null);
   if(shot)putImg(t.id,shot.blob).then(function(ok){if(!ok)toast('Trade added. Screenshot is kept for this session only (browser storage blocked).');});
@@ -845,19 +1012,19 @@ function deleteTrade(id){
   var tr=trades[idx];
   lastDeleted={t:tr,i:idx,blob:null};
   var held=lastDeleted;
-  trades.splice(idx,1);save();render();
+  trades.splice(idx,1);save();render();syncDelete([tr.id]);
   if(tr.img)getImg(tr.id).then(function(b){held.blob=b;return delImg(tr.id);});
   toast('Trade deleted.','Undo',function(){
     if(!lastDeleted)return;
     var d=lastDeleted;lastDeleted=null;
-    trades.splice(Math.min(d.i,trades.length),0,d.t);save();
+    trades.splice(Math.min(d.i,trades.length),0,d.t);save();syncUpsert([d.t]);
     if(d.blob)putImg(d.t.id,d.blob).then(render);else render();
   });
 }
 function clearAll(){
   if(!trades.length){toast('Nothing to clear.');return;}
-  if(!window.confirm('Delete all '+trades.length+' trades from this browser? Export a CSV first if you want a backup.'))return;
-  trades=[];save();clearImgs();render();toast('Journal cleared.');
+  if(!window.confirm('Delete all '+trades.length+' trades'+(user?' from this browser and your account':' from this browser')+'? Export a CSV first if you want a backup.'))return;
+  trades=[];save();clearImgs();syncClear();render();toast('Journal cleared.');
 }
 
 /* ---------- sample data ---------- */
@@ -936,7 +1103,9 @@ function importCSV(file){
       seen[key]=1;base.push(t);added++;
     }
     if(!added){toast('No new trades imported ('+skipped+' skipped).');return;}
+    var prevIds={};trades.forEach(function(x){prevIds[x.id]=1;});
     trades=base;save();render();
+    syncUpsert(base.filter(function(x){return !prevIds[x.id];}));
     toast('Imported '+added+' trade'+(added===1?'':'s')+(skipped?' ('+skipped+' skipped)':'')+(hadSample?'. Sample data cleared.':'.'));
   };
   fr.readAsText(file);
@@ -953,6 +1122,7 @@ function init(){
   box.addEventListener('click',function(){$('#fShot').click();});
   box.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#fShot').click();}});
   $('#fShot').addEventListener('change',function(e){if(e.target.files[0])takeFile(e.target.files[0]);e.target.value='';});
+  initAuth();
   $('#shotRm').addEventListener('click',function(){setPending(null);});
   ['dragenter','dragover'].forEach(function(n){box.addEventListener(n,function(e){e.preventDefault();box.classList.add('drag');});});
   ['dragleave','drop'].forEach(function(n){box.addEventListener(n,function(e){e.preventDefault();box.classList.remove('drag');});});
