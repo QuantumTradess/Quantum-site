@@ -193,6 +193,34 @@
     #authModal .links{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px;font-size:13px;}
     #authModal .links button{background:none;border:none;color:var(--green);cursor:pointer;font-size:13px;padding:6px 0;font-family:'Inter',sans-serif;}
     #authModal .ax{position:absolute;top:10px;right:10px;width:36px;height:36px;border:none;background:none;color:var(--muted);font-size:22px;cursor:pointer;}
+    select.inp{color-scheme:dark;cursor:pointer;}
+    .mdl{position:fixed;inset:0;z-index:3400;background:rgba(2,4,8,0.88);display:none;align-items:flex-start;justify-content:center;padding:16px;overflow:auto;}
+    .mdl.show{display:flex;}
+    .mdl .box{width:100%;max-width:580px;background:#0c1220;border:1px solid var(--border);border-radius:14px;padding:22px;margin:auto;position:relative;}
+    .mdl h3{font-family:'Space Grotesk',sans-serif;font-size:20px;color:var(--white);margin-bottom:4px;}
+    .mdl p.sub{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+    .mdl .mx{position:absolute;top:10px;right:10px;width:36px;height:36px;border:none;background:none;color:var(--muted);font-size:22px;cursor:pointer;}
+    .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .mgrid .full{grid-column:1/-1;}
+    .mgrid .field{margin:0;}
+    .mmsg{min-height:20px;font-size:13px;color:var(--red);margin:8px 0;}
+    .macts{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+    .alist{display:grid;gap:8px;margin:12px 0 18px;}
+    .aitem{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:rgba(255,255,255,0.02);}
+    .aitem .meta{flex:1;min-width:0;}
+    .aitem .nm{color:var(--white);font-weight:600;font-size:14px;word-break:break-word;}
+    .aitem .sm{color:var(--muted);font-size:12px;margin-top:2px;}
+    .acctctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+    .acctctl select{min-height:38px;padding:7px 10px;font-size:13px;max-width:220px;}
+    .acctpanel{margin-bottom:24px;}
+    .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:14px;}
+    .rule .rl{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+    .rule .rv{font-size:15px;color:var(--white);font-weight:600;margin-bottom:6px;font-variant-numeric:tabular-nums;}
+    .meter{height:8px;border-radius:4px;background:rgba(255,255,255,0.07);overflow:hidden;}
+    .meter i{display:block;height:100%;border-radius:4px;background:var(--green);transition:width .4s;}
+    .meter i.warn{background:var(--amber);}.meter i.bad{background:var(--red);}
+    .chip{display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-left:8px;vertical-align:middle;}
+    .chip.ok{background:rgba(0,245,160,0.12);color:var(--green);}.chip.bad{background:rgba(255,77,109,0.14);color:var(--red);}
     .shotbox{border:1.5px dashed rgba(255,255,255,0.18);border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;color:var(--muted);font-size:14px;min-height:56px;transition:border-color .2s,background .2s;background:rgba(0,0,0,0.18);}
     .shotbox:hover,.shotbox:focus-visible,.shotbox.drag{border-color:var(--green);background:rgba(0,245,160,0.05);outline:none;}
     .shotbox b{color:var(--white);font-weight:600;}
@@ -276,6 +304,8 @@
       .log-table td:nth-child(6){grid-area:setup;text-align:right;color:var(--muted);font-size:12px;}
       .log-table td:nth-child(7){grid-area:note;max-width:none;white-space:normal;font-size:12px;}
       .log-table td.shot{grid-area:shot;}
+      .icon-btn{width:34px;height:34px;}
+      .mgrid{grid-template-columns:1fr;}
       .log-table td.shot .thumb{width:100%;height:auto;aspect-ratio:16/7;}
       .log-table td.empty,.log-table td.shot.empty{display:none;}
       .log-table td.act{grid-area:act;justify-self:end;}
@@ -392,6 +422,11 @@
         <label class="lbl" for="fNote">Note (optional)</label>
         <input class="inp" type="text" id="fNote" placeholder="What did you see? What would you repeat?" maxlength="200">
       </div>
+      <div class="field f4">
+        <label class="lbl" for="fAcct">Account</label>
+        <select class="inp" id="fAcct"></select>
+      </div>
+      <div class="field f4" style="align-self:end"><button class="btn btn-ghost btn-sm" type="button" id="btnAccts2">+ New / manage accounts</button></div>
       <div class="field f12" style="grid-column:1/-1">
         <label class="lbl" id="lblShot">Chart screenshot (optional)</label>
         <div class="shotbox" id="shotBox" role="button" tabindex="0" aria-labelledby="lblShot">
@@ -417,6 +452,10 @@
       <button class="ptab" type="button" data-period="month">This Month</button>
       <button class="ptab" type="button" data-period="30d">Last 30 Days</button>
     </div>
+    <div class="acctctl">
+      <select class="inp" id="acctSel" aria-label="Account"></select>
+      <button class="btn btn-ghost btn-sm" type="button" id="btnAccts">Accounts</button>
+    </div>
     <div class="tool-actions">
       <button class="btn btn-ghost btn-sm" type="button" id="btnSample">Load Sample Data</button>
       <button class="btn btn-ghost btn-sm" type="button" id="btnExport">Export CSV</button>
@@ -434,6 +473,7 @@
     <span><b>Saving is unavailable</b> in this browser mode (private window or blocked storage). Your trades will be lost when you close this tab. Use Export CSV to keep a copy.</span>
   </div>
 
+  <div class="card acctpanel" id="acctPanel" hidden></div>
   <div class="stats-grid" id="stats"></div>
 
   <div class="card">
@@ -493,6 +533,46 @@
   </form>
   <div class="links"><button type="button" id="amSwitch">Create an account</button><button type="button" id="amForgot">Forgot password?</button></div>
 </div></div>
+<div class="mdl" id="acctModal" role="dialog" aria-modal="true" aria-labelledby="amT"><div class="box">
+  <button class="mx" type="button" id="amClose" aria-label="Close">×</button>
+  <h3 id="amT">Your accounts</h3>
+  <p class="sub">Create an account for each challenge, funded or personal account you trade. Set its rules and the journal tracks your progress.</p>
+  <div class="alist" id="acctList"></div>
+  <form id="acForm" novalidate>
+    <h3 id="acFormT" style="font-size:16px;margin-bottom:10px">Add an account</h3>
+    <div class="mgrid">
+      <div class="field full"><label class="lbl" for="acName">Account name</label><input class="inp" id="acName" maxlength="30" placeholder="e.g. FTMO 100k Challenge"></div>
+      <div class="field"><label class="lbl" for="acType">Type</label><select class="inp" id="acType"><option value="challenge">Prop challenge</option><option value="funded">Funded account</option><option value="personal">Personal / live</option></select></div>
+      <div class="field"><label class="lbl" for="acStart">Starting balance $</label><input class="inp" id="acStart" type="number" inputmode="decimal" step="any" min="1" placeholder="100000"></div>
+      <div class="field"><label class="lbl" for="acTarget">Profit target % (optional)</label><input class="inp" id="acTarget" type="number" inputmode="decimal" step="any" min="0" max="1000" placeholder="10"></div>
+      <div class="field"><label class="lbl" for="acDaily">Max daily loss % (optional)</label><input class="inp" id="acDaily" type="number" inputmode="decimal" step="any" min="0" max="100" placeholder="5"></div>
+      <div class="field"><label class="lbl" for="acMax">Max total loss % (optional)</label><input class="inp" id="acMax" type="number" inputmode="decimal" step="any" min="0" max="100" placeholder="10"></div>
+      <div class="field"><label class="lbl" for="acDD">Max loss type</label><select class="inp" id="acDD"><option value="static">Static (from starting balance)</option><option value="trailing">Trailing (from peak balance)</option></select></div>
+    </div>
+    <div class="mmsg" id="acMsg" role="alert"></div>
+    <div class="macts"><button class="btn btn-primary" type="submit" id="acSave">Add account</button><button class="btn btn-ghost" type="button" id="acCancel" hidden>Cancel edit</button></div>
+  </form>
+</div></div>
+<div class="mdl" id="editModal" role="dialog" aria-modal="true" aria-labelledby="edT"><div class="box">
+  <button class="mx" type="button" id="edClose" aria-label="Close">×</button>
+  <h3 id="edT">Edit trade</h3>
+  <p class="sub">Change anything and save. Your stats update instantly.</p>
+  <form id="edForm" novalidate>
+    <div class="mgrid">
+      <div class="field"><label class="lbl" for="eDate">Date</label><input class="inp" type="date" id="eDate"></div>
+      <div class="field"><label class="lbl" for="ePair">Pair / Symbol</label><input class="inp" id="ePair" maxlength="12" autocapitalize="characters"></div>
+      <div class="field"><label class="lbl" for="eDir">Direction</label><select class="inp" id="eDir"><option>Long</option><option>Short</option></select></div>
+      <div class="field"><label class="lbl" for="eRes">Result</label><select class="inp" id="eRes"><option>Win</option><option>Loss</option><option>BE</option></select></div>
+      <div class="field"><label class="lbl" for="eRR">R multiple</label><input class="inp" type="number" id="eRR" inputmode="decimal" step="any"></div>
+      <div class="field"><label class="lbl" for="ePnl">P&amp;L $ (optional)</label><input class="inp" type="number" id="ePnl" inputmode="decimal" step="any"></div>
+      <div class="field"><label class="lbl" for="eSetup">Setup</label><input class="inp" id="eSetup" maxlength="40"></div>
+      <div class="field"><label class="lbl" for="eAcct">Account</label><select class="inp" id="eAcct"></select></div>
+      <div class="field full"><label class="lbl" for="eNote">Note</label><input class="inp" id="eNote" maxlength="200"></div>
+    </div>
+    <div class="mmsg" id="edMsg" role="alert"></div>
+    <div class="macts"><button class="btn btn-primary" type="submit">Save changes</button><button class="btn btn-ghost" type="button" id="edCancel">Cancel</button></div>
+  </form>
+</div></div>
 <div id="lightbox" role="dialog" aria-modal="true" aria-label="Trade screenshot"><button class="x" type="button" id="lbX" aria-label="Close">×</button><img id="lbImg" alt="Trade chart screenshot"><div class="cap" id="lbCap"></div></div>
 <div id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button type="button" id="toastBtn" hidden></button></div>
 
@@ -512,7 +592,7 @@
 'use strict';
 
 var KEY='qt_journal_v1', MAX_TRADES=5000, MAX_IMPORT_BYTES=1048576;
-var chartMode='r', trades=[], storageOK=true, period='all', showAll=false, lastDeleted=null, toastTimer=null, rrTouched=false;
+var KEY2='qt_journal_accts_v1', KEYSEL='qt_journal_acct_sel', MAX_ACCTS=20, accts=[], acct='all', chartMode='r', trades=[], storageOK=true, period='all', showAll=false, lastDeleted=null, toastTimer=null, rrTouched=false;
 
 /* ---------- helpers ---------- */
 function $(s){return document.querySelector(s);}
@@ -565,10 +645,43 @@ function cleanTrade(t){
   };
   var pv=(t.p===null||t.p===undefined||t.p==='')?NaN:Number(t.p);
   if(isFinite(pv)&&Math.abs(pv)<=1e9){pv=Math.round(pv*100)/100;out.p=result==='Win'?Math.abs(pv):(result==='Loss'?-Math.abs(pv):pv);}
+  if(typeof t.a==='string'&&t.a&&t.a.length<=40)out.a=t.a;
   if(t.s)out.s=1;
   if(t.img)out.img=1;
   return out;
 }
+
+/* ---------- accounts ---------- */
+var ACCT_TYPES={personal:'Personal',challenge:'Prop challenge',funded:'Funded'};
+function numOrU(v,min,max){
+  if(v===null||v===undefined||v==='')return undefined;
+  var n=Number(v);if(!isFinite(n)||n<min||n>max)return undefined;return Math.round(n*100)/100;
+}
+function cleanAcct(a){
+  if(!a||typeof a!=='object')return null;
+  var name=String(a.name||'').trim().slice(0,30);if(!name)return null;
+  var out={id:typeof a.id==='string'&&a.id&&a.id.length<=40?a.id:newId(),name:name,type:ACCT_TYPES[a.type]?a.type:'personal',dd:a.dd==='trailing'?'trailing':'static'};
+  var st=numOrU(a.start,0.01,1e9);if(st!==undefined)out.start=st;
+  var tg=numOrU(a.target,0.01,1000);if(tg!==undefined)out.target=tg;
+  var dl=numOrU(a.daily,0.01,100);if(dl!==undefined)out.daily=dl;
+  var mx=numOrU(a.maxdd,0.01,100);if(mx!==undefined)out.maxdd=mx;
+  return out;
+}
+function loadAccts(){
+  if(!storageOK)return [];
+  try{
+    var arr=JSON.parse(localStorage.getItem(KEY2)||'[]');
+    if(!Array.isArray(arr))return [];
+    return arr.map(cleanAcct).filter(Boolean).slice(0,MAX_ACCTS);
+  }catch(e){return [];}
+}
+function saveAccts(){
+  if(!storageOK)return;
+  try{localStorage.setItem(KEY2,JSON.stringify(accts));}catch(e){}
+}
+function saveSel(){try{if(storageOK)localStorage.setItem(KEYSEL,acct);}catch(e){}}
+function acctById(id){return accts.find(function(a){return a.id===id;});}
+function acctName(id){var a=acctById(id);return a?a.name:'';}
 
 /* ---------- storage ---------- */
 function checkStorage(){
@@ -627,7 +740,7 @@ function computeStats(list){
 }
 
 /* ---------- render ---------- */
-function viewList(){return sortedAsc(trades.filter(inPeriod));}
+function viewList(){return sortedAsc(trades.filter(function(t){return inPeriod(t)&&(acct==='all'||t.a===acct);}));}
 
 function renderStats(s){
   var cells=[
@@ -743,14 +856,14 @@ function renderLog(list){
     var bc=t.result==='Win'?'b-win':(t.result==='Loss'?'b-loss':'b-be');
     return '<tr>'
       +'<td data-label="Date">'+esc(t.date)+'</td>'
-      +'<td data-label="Pair"><b>'+esc(t.pair)+'</b></td>'
+      +'<td data-label="Pair"><b>'+esc(t.pair)+'</b>'+((acct==='all'&&t.a&&acctName(t.a))?'<span class="usd" style="color:var(--muted)">'+esc(acctName(t.a))+'</span>':'')+'</td>'
       +'<td data-label="Direction"><span class="badge b-dir">'+esc(t.dir)+'</span></td>'
       +'<td data-label="Result"><span class="badge '+bc+'">'+esc(t.result)+'</span></td>'
       +'<td data-label="R" class="num '+(t.r>0?'pos':(t.r<0?'neg':''))+'">'+fmtR(t.r)+(t.p!==undefined?'<span class="usd">'+fmtUSD(t.p)+'</span>':'')+'</td>'
       +'<td data-label="Setup">'+(t.setup?esc(t.setup):'<span style="color:var(--muted)">—</span>')+'</td>'
       +(t.note?'<td data-label="Note" class="note" title="'+esc(t.note)+'">'+esc(t.note)+'</td>':'<td data-label="Note" class="note empty">—</td>')
       +(t.img?'<td data-label="Chart" class="shot"><button class="thumb" type="button" data-shot="'+esc(t.id)+'" aria-label="View chart screenshot for '+esc(t.pair)+' '+esc(t.date)+'"></button></td>':'<td class="shot empty"><span style="color:var(--muted)">—</span></td>')
-      +'<td class="act"><button class="icon-btn" type="button" data-del="'+esc(t.id)+'" aria-label="Delete trade '+esc(t.pair)+' '+esc(t.date)+'">×</button></td>'
+      +'<td class="act">'+(t.s?'':'<button class="icon-btn" type="button" data-edit="'+esc(t.id)+'" aria-label="Edit trade '+esc(t.pair)+' '+esc(t.date)+'">✎</button>')+'<button class="icon-btn" type="button" data-del="'+esc(t.id)+'" aria-label="Delete trade '+esc(t.pair)+' '+esc(t.date)+'">×</button></td>'
       +'</tr>';
   }).join('')+'</tbody>';
   hydrateThumbs();
@@ -772,6 +885,8 @@ function updateBanners(){
 
 function render(){
   var list=viewList(),s=computeStats(list);
+  if(acct!=='all'&&!acctById(acct)){acct='all';saveSel();}
+  renderAcctSelect();renderAcctPanel();
   renderStats(s);drawChart(list);
   renderBreakdown('#byPair',group(list,function(t){return t.pair;}),'Pair');
   renderBreakdown('#bySetup',group(list,function(t){return t.setup;}),'Setup');
@@ -874,8 +989,8 @@ function closeShot(){$('#lightbox').classList.remove('show');$('#lbImg').removeA
 /* ---------- accounts & cloud sync (Supabase) ---------- */
 var SB_URL='https://vcnsbmfxjdeqlncxiqwk.supabase.co', SB_KEY='sb_publishable_cBmOMUVxDsPukqcmvudxNg_Zayv9_Cg';
 var sb=null, user=null, syncedFor=null, amMode='in';
-function toRow(t){return {user_id:user.id,id:t.id,date:t.date,pair:t.pair,dir:t.dir,result:t.result,r:t.r,pnl:(t.p===undefined?null:t.p),setup:t.setup,note:t.note,img:!!t.img};}
-function fromRow(r){return cleanTrade({id:r.id,date:r.date,pair:r.pair,dir:r.dir,result:r.result,r:r.r,p:(r.pnl===null||r.pnl===undefined)?undefined:Number(r.pnl),setup:r.setup,note:r.note,img:r.img?1:0});}
+function toRow(t){return {user_id:user.id,id:t.id,date:t.date,pair:t.pair,dir:t.dir,result:t.result,r:t.r,pnl:(t.p===undefined?null:t.p),account_id:t.a||null,setup:t.setup,note:t.note,img:!!t.img};}
+function fromRow(r){return cleanTrade({id:r.id,date:r.date,pair:r.pair,dir:r.dir,result:r.result,r:r.r,p:(r.pnl===null||r.pnl===undefined)?undefined:Number(r.pnl),a:r.account_id||undefined,setup:r.setup,note:r.note,img:r.img?1:0});}
 function setAuthUI(state){
   var on=!!user;
   $('#btnSignIn').hidden=on;$('#btnSignOut').hidden=!on;
@@ -890,14 +1005,24 @@ function syncUpsert(list){
   var rows=list.filter(function(t){return !t.s;}).map(toRow),jobs=[];
   function up(chunk){
     return sb.from('trades').upsert(chunk,{onConflict:'user_id,id'}).then(function(r){
-      if(r.error&&(r.error.code==='PGRST204'||/pnl/i.test(r.error.message||''))){
-        return sb.from('trades').upsert(chunk.map(function(x){var c={};for(var k in x)if(k!=='pnl')c[k]=x[k];return c;}),{onConflict:'user_id,id'});
+      if(r.error&&(r.error.code==='PGRST204'||/pnl|account_id/i.test(r.error.message||''))){
+        return sb.from('trades').upsert(chunk.map(function(x){var c={};for(var k in x)if(k!=='pnl'&&k!=='account_id')c[k]=x[k];return c;}),{onConflict:'user_id,id'});
       }
       return r;
     });
   }
   for(var i=0;i<rows.length;i+=500){jobs.push(up(rows.slice(i,i+500)));}
   return Promise.all(jobs).then(function(rs){if(rs.some(function(r){return r.error;}))syncFail();else setAuthUI('ok');}).catch(syncFail);
+}
+var acctCloud=false;
+function acctRow(a){return {user_id:user.id,id:a.id,name:a.name,type:a.type,start:a.start===undefined?null:a.start,target:a.target===undefined?null:a.target,daily:a.daily===undefined?null:a.daily,maxdd:a.maxdd===undefined?null:a.maxdd,dd_type:a.dd};}
+function syncAcctUpsert(list){
+  if(!sb||!user||!acctCloud||!list.length)return Promise.resolve();
+  return sb.from('accounts').upsert(list.map(acctRow),{onConflict:'user_id,id'}).then(function(r){if(r.error)syncFail();else setAuthUI('ok');},syncFail);
+}
+function syncAcctDelete(id){
+  if(!sb||!user||!acctCloud)return Promise.resolve();
+  return sb.from('accounts').delete().eq('id',id).then(function(r){if(r.error)syncFail();else setAuthUI('ok');},syncFail);
 }
 function syncDelete(ids){
   if(!sb||!user||!ids.length)return Promise.resolve();
@@ -918,9 +1043,22 @@ function fetchAll(){
   }
   return page(0);
 }
+function reconcileAccts(){
+  return sb.from('accounts').select('*').then(function(r){
+    if(r.error){acctCloud=false;return;}
+    acctCloud=true;
+    var remote=(r.data||[]).map(function(x){return cleanAcct({id:x.id,name:x.name,type:x.type,start:x.start,target:x.target,daily:x.daily,maxdd:x.maxdd,dd:x.dd_type});}).filter(Boolean);
+    var ids={};remote.forEach(function(a){ids[a.id]=1;});
+    var local=accts.filter(function(a){return !ids[a.id];});
+    var names={};remote.forEach(function(a){names[a.name.toLowerCase()]=1;});
+    local=local.filter(function(a){return !names[a.name.toLowerCase()];});
+    accts=remote.concat(local).slice(0,MAX_ACCTS);saveAccts();
+    return syncAcctUpsert(local);
+  },function(){acctCloud=false;});
+}
 function reconcile(){
   setAuthUI('syncing');
-  return fetchAll().then(function(rows){
+  return reconcileAccts().then(fetchAll).then(function(rows){
     var remote=rows.map(fromRow).filter(Boolean),ids={};
     remote.forEach(function(t){ids[t.id]=1;});
     var local=trades.filter(function(t){return !t.s&&!ids[t.id];});
@@ -935,7 +1073,7 @@ function reconcile(){
 function onSession(session){
   var u=session&&session.user?session.user:null;
   if(!u){
-    if(user){user=null;syncedFor=null;trades=[];save();render();}
+    if(user){user=null;syncedFor=null;acctCloud=false;trades=[];accts=[];acct='all';save();saveAccts();saveSel();render();}
     user=null;setAuthUI();return;
   }
   user=u;
@@ -1010,6 +1148,162 @@ function submitAuth(ev){
   }).catch(function(e){btn.disabled=false;amMsg(friendlyErr(e));});
 }
 
+/* ---------- account UI ---------- */
+function fmtMoney(x){var v=Math.round(x*100)/100;return (v<0?'-':'')+'$'+Math.abs(v).toLocaleString('en-US',{maximumFractionDigits:2});}
+function opt(v,l,sel){return '<option value="'+esc(v)+'"'+(sel?' selected':'')+'>'+esc(l)+'</option>';}
+function fillSelect(el,first,keep){
+  var cur=keep!==undefined?keep:el.value;
+  el.innerHTML=first.map(function(f){return opt(f[0],f[1],false);}).join('')+accts.map(function(a){return opt(a.id,a.name,false);}).join('');
+  el.value=cur;if(el.value!==cur)el.selectedIndex=0;
+}
+function renderAcctSelect(){
+  fillSelect($('#acctSel'),[['all','All accounts']],acct);
+  fillSelect($('#fAcct'),[['','No account']]);
+  fillSelect($('#eAcct'),[['','No account']]);
+}
+function acctMetrics(a){
+  var mine=sortedAsc(trades.filter(function(t){return t.a===a.id&&!t.s&&t.p!==undefined;}));
+  var m={n:mine.length,net:0,today:0,peak:0,dd:0};
+  var cum=0,start=a.start||0;
+  mine.forEach(function(t){
+    m.net+=t.p;cum+=t.p;if(cum>m.peak)m.peak=cum;
+    if(t.date===today())m.today+=t.p;
+  });
+  m.bal=start+m.net;
+  m.ddNow=a.dd==='trailing'?Math.max(0,m.peak-cum):Math.max(0,-cum);
+  return m;
+}
+function meter(pct,cls){return '<div class="meter"><i class="'+cls+'" style="width:'+Math.max(0,Math.min(100,pct))+'%"></i></div>';}
+function renderAcctPanel(){
+  var el=$('#acctPanel'),a=acct==='all'?null:acctById(acct);
+  if(!a){el.hidden=true;el.innerHTML='';return;}
+  var m=acctMetrics(a),h='<div class="card-head" style="margin-bottom:6px"><div><div class="card-title">'+esc(a.name)
+    +'</div><div class="card-sub">'+esc(ACCT_TYPES[a.type])+(a.start?' · started at '+fmtMoney(a.start):'')+'</div></div>'
+    +'<button class="btn btn-ghost btn-sm" type="button" data-editacct="'+esc(a.id)+'">Edit account</button></div>';
+  var rules='';
+  if(!a.start){
+    h+='<p class="hint" style="margin:8px 0 0">Set a starting balance (Edit account) to see balance and rule progress.</p>';
+  }else if(!m.n){
+    h+='<p class="hint" style="margin:8px 0 0">Add trades with a P&amp;L $ amount to this account to track your balance and rules.</p>';
+  }
+  if(a.start&&m.n){
+    var ret=m.net/a.start*100;
+    rules+='<div class="rule"><div class="rl"><span>Balance</span></div><div class="rv">'+fmtMoney(m.bal)+'</div><div class="hint" style="margin:0">'+(m.net>=0?'+':'')+(Math.round(ret*100)/100)+'% · '+(m.net>=0?'+':'')+fmtMoney(m.net)+'</div></div>';
+  }
+  if(a.start&&a.target){
+    var tAmt=a.start*a.target/100,pg=m.net/tAmt*100,hit=m.net>=tAmt;
+    rules+='<div class="rule"><div class="rl"><span>Profit target</span><span>'+(a.target)+'%</span></div><div class="rv">'+fmtMoney(Math.max(0,m.net))+' / '+fmtMoney(tAmt)+(hit?'<span class="chip ok">Reached</span>':'')+'</div>'+meter(pg,'')+'</div>';
+  }
+  if(a.start&&a.daily){
+    var dl=a.start*a.daily/100,used=Math.max(0,-m.today),br=used>=dl;
+    rules+='<div class="rule"><div class="rl"><span>Daily loss today</span><span>'+a.daily+'%</span></div><div class="rv">'+fmtMoney(used)+' / '+fmtMoney(dl)+(br?'<span class="chip bad">Breached</span>':'')+'</div>'+meter(used/dl*100,br?'bad':(used/dl>=.7?'warn':''))+'</div>';
+  }
+  if(a.start&&a.maxdd){
+    var ml=a.start*a.maxdd/100,u2=m.ddNow,br2=u2>=ml;
+    rules+='<div class="rule"><div class="rl"><span>Max loss ('+(a.dd==='trailing'?'trailing':'static')+')</span><span>'+a.maxdd+'%</span></div><div class="rv">'+fmtMoney(u2)+' / '+fmtMoney(ml)+(br2?'<span class="chip bad">Breached</span>':'')+'</div>'+meter(u2/ml*100,br2?'bad':(u2/ml>=.7?'warn':''))+'</div>';
+  }
+  if(rules)h+='<div class="rules">'+rules+'</div>';
+  if(a.start&&m.n)h+='<p class="hint" style="margin:12px 0 0">Based on '+m.n+' trade'+(m.n===1?'':'s')+' with a P&amp;L $ amount. Daily loss counts today ('+esc(today())+') only.</p>';
+  el.innerHTML=h;el.hidden=false;
+}
+var editingAcct=null;
+function acctSummary(a){
+  var b=[ACCT_TYPES[a.type]];
+  if(a.start)b.push(fmtMoney(a.start));
+  if(a.target)b.push('target '+a.target+'%');
+  if(a.daily)b.push('daily '+a.daily+'%');
+  if(a.maxdd)b.push('max loss '+a.maxdd+'% '+a.dd);
+  return b.join(' · ');
+}
+function renderAcctList(){
+  var l=$('#acctList');
+  if(!accts.length){l.innerHTML='<div class="hint" style="margin:0">No accounts yet. Add your first one below.</div>';return;}
+  l.innerHTML=accts.map(function(a){
+    var n=trades.filter(function(t){return t.a===a.id;}).length;
+    return '<div class="aitem"><div class="meta"><div class="nm">'+esc(a.name)+'</div><div class="sm">'+esc(acctSummary(a))+' · '+n+' trade'+(n===1?'':'s')+'</div></div>'
+      +'<button class="btn btn-ghost btn-sm" type="button" data-aedit="'+esc(a.id)+'">Edit</button>'
+      +'<button class="btn btn-ghost btn-sm btn-danger" type="button" data-adel="'+esc(a.id)+'">Delete</button></div>';
+  }).join('');
+}
+function resetAcForm(){
+  editingAcct=null;$('#acForm').reset();$('#acFormT').textContent='Add an account';$('#acSave').textContent='Add account';$('#acCancel').hidden=true;$('#acMsg').textContent='';
+}
+function openAccts(editId){
+  renderAcctList();resetAcForm();
+  if(editId)startEditAcct(editId);
+  $('#acctModal').classList.add('show');
+  setTimeout(function(){$('#acName').focus();},30);
+}
+function closeAccts(){$('#acctModal').classList.remove('show');}
+function startEditAcct(id){
+  var a=acctById(id);if(!a)return;
+  editingAcct=id;
+  $('#acName').value=a.name;$('#acType').value=a.type;$('#acStart').value=a.start||'';$('#acTarget').value=a.target||'';
+  $('#acDaily').value=a.daily||'';$('#acMax').value=a.maxdd||'';$('#acDD').value=a.dd;
+  $('#acFormT').textContent='Edit account';$('#acSave').textContent='Save changes';$('#acCancel').hidden=false;$('#acMsg').textContent='';
+  $('#acName').focus();
+}
+function submitAcct(ev){
+  ev.preventDefault();
+  var msg=$('#acMsg');msg.textContent='';
+  var name=$('#acName').value.trim();
+  if(!name){msg.textContent='Give the account a name.';return;}
+  function chkOpt(id,label,min,max){var v=$(id).value.trim();if(v==='')return true;var n=Number(v);if(!isFinite(n)||n<min||n>max){msg.textContent=label+' must be between '+min+' and '+max+'.';return false;}return true;}
+  if(!chkOpt('#acStart','Starting balance',0.01,1e9)||!chkOpt('#acTarget','Profit target',0.01,1000)||!chkOpt('#acDaily','Daily loss',0.01,100)||!chkOpt('#acMax','Max total loss',0.01,100))return;
+  var dup=accts.some(function(a){return a.name.toLowerCase()===name.toLowerCase()&&a.id!==editingAcct;});
+  if(dup){msg.textContent='You already have an account with that name.';return;}
+  var obj=cleanAcct({id:editingAcct||newId(),name:name,type:$('#acType').value,start:$('#acStart').value,target:$('#acTarget').value,daily:$('#acDaily').value,maxdd:$('#acMax').value,dd:$('#acDD').value});
+  if(!obj){msg.textContent='Could not save that account.';return;}
+  if(editingAcct){accts=accts.map(function(a){return a.id===editingAcct?obj:a;});}
+  else{
+    if(accts.length>=MAX_ACCTS){msg.textContent='Account limit reached ('+MAX_ACCTS+').';return;}
+    accts.push(obj);
+  }
+  saveAccts();syncAcctUpsert([obj]);
+  var wasNew=!editingAcct;
+  resetAcForm();renderAcctList();
+  if(wasNew){acct=obj.id;saveSel();$('#fAcct').value=obj.id;}
+  render();$('#fAcct').value=wasNew?obj.id:$('#fAcct').value;
+  toast(wasNew?'Account added.':'Account updated.');
+}
+function deleteAcct(id){
+  var a=acctById(id);if(!a)return;
+  var n=trades.filter(function(t){return t.a===id;}).length;
+  if(!window.confirm('Delete account "'+a.name+'"? '+(n?('Its '+n+' trade'+(n===1?'':'s')+' will stay in your journal without an account.'):'')))return;
+  var moved=[];
+  trades.forEach(function(t){if(t.a===id){delete t.a;moved.push(t);}});
+  accts=accts.filter(function(x){return x.id!==id;});
+  if(acct===id){acct='all';saveSel();}
+  save();saveAccts();syncAcctDelete(id);syncUpsert(moved);
+  render();renderAcctList();toast('Account deleted.');
+}
+
+/* ---------- edit trade ---------- */
+var editingId=null;
+function openEdit(id){
+  var t=trades.find(function(x){return x.id===id;});if(!t||t.s)return;
+  editingId=id;renderAcctSelect();
+  $('#eDate').value=t.date;$('#ePair').value=t.pair;$('#eDir').value=t.dir;$('#eRes').value=t.result;
+  $('#eRR').value=t.result==='BE'?0:Math.abs(t.r);$('#ePnl').value=t.p===undefined?'':Math.abs(t.p)*(t.result==='BE'?Math.sign(t.p)||1:1);
+  $('#eSetup').value=t.setup;$('#eNote').value=t.note;$('#eAcct').value=t.a||'';
+  $('#edMsg').textContent='';$('#editModal').classList.add('show');
+  setTimeout(function(){$('#ePair').focus();},30);
+}
+function closeEdit(){$('#editModal').classList.remove('show');editingId=null;}
+function submitEdit(ev){
+  ev.preventDefault();
+  var old=trades.find(function(x){return x.id===editingId;});if(!old)return;
+  var msg=$('#edMsg'),date=$('#eDate').value,pair=$('#ePair').value.trim().toUpperCase(),res=$('#eRes').value,rr=Number($('#eRR').value),pr=$('#ePnl').value.trim();
+  if(!validDate(date)||date>addDays(today(),1)){msg.textContent='Pick a valid date (not in the future).';return;}
+  if(!/^[A-Z0-9\/._\- ]{1,12}$/.test(pair)){msg.textContent='Enter the pair or symbol, e.g. XAUUSD.';return;}
+  if(res!=='BE'&&(!isFinite(rr)||rr<=0||rr>100)){msg.textContent='R multiple must be between 0.1 and 100.';return;}
+  if(pr!==''&&(!isFinite(Number(pr))||Math.abs(Number(pr))>1e9)){msg.textContent='P&L must be a number, or leave it empty.';return;}
+  var nt=cleanTrade({id:old.id,date:date,pair:pair,dir:$('#eDir').value,result:res,r:rr,p:pr,setup:$('#eSetup').value,note:$('#eNote').value,a:$('#eAcct').value||undefined,img:old.img});
+  if(!nt){msg.textContent='Could not save that trade. Check the fields.';return;}
+  trades=trades.map(function(x){return x.id===old.id?nt:x;});
+  save();syncUpsert([nt]);closeEdit();render();toast('Trade updated.');
+}
+
 /* ---------- form ---------- */
 function selectedRes(){return document.querySelector('input[name="res"]:checked').value;}
 function applyResultDefaults(){
@@ -1031,7 +1325,7 @@ function addTrade(ev){
   if(res!=='BE'&&(!isFinite(rr)||rr<=0||rr>100)){msg.textContent='R multiple must be between 0.1 and 100.';return;}
   if(pnlRaw!==''&&(!isFinite(Number(pnlRaw))||Math.abs(Number(pnlRaw))>1e9)){msg.textContent='P&L must be a number, or leave it empty.';return;}
   if(trades.length>=MAX_TRADES){msg.textContent='Journal is full ('+MAX_TRADES+' trades). Export a CSV and clear old trades.';return;}
-  var t=cleanTrade({id:newId(),date:date,pair:pair,dir:dir,result:res,r:rr,p:pnlRaw,setup:$('#fSetup').value,note:$('#fNote').value});
+  var t=cleanTrade({id:newId(),date:date,pair:pair,dir:dir,result:res,r:rr,p:pnlRaw,a:$('#fAcct').value||undefined,setup:$('#fSetup').value,note:$('#fNote').value});
   if(!t){msg.textContent='Could not add that trade. Check the fields.';return;}
   var hadSample=trades.some(function(x){return x.s;});
   if(hadSample)trades=trades.filter(function(x){return !x.s;});
@@ -1084,7 +1378,7 @@ function loadSample(){
     var t=cleanTrade({id:newId(),date:ymd(d),pair:pairs[i%pairs.length],dir:(i*7%3===0)?'Short':'Long',result:result,r:mag,setup:setups[i%setups.length],note:i%6===0?'Sample trade':''});
     if(t){t.s=1;out.push(t);}
   }
-  trades=out;save();render();toast('Sample data loaded. Add your first trade to replace it.');
+  acct='all';saveSel();trades=out;save();render();toast('Sample data loaded. Add your first trade to replace it.');
 }
 
 /* ---------- CSV ---------- */
@@ -1094,9 +1388,9 @@ function csvCell(s){s=String(s);return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""
 function exportCSV(){
   var real=trades.filter(function(t){return !t.s;});
   if(!real.length){toast(trades.length?'Sample data is not exported. Add your own trades first.':'No trades to export yet.');return;}
-  var rows=['date,pair,direction,result,r,pnl,setup,note'];
+  var rows=['date,pair,direction,result,r,pnl,account,setup,note'];
   sortedAsc(real).forEach(function(t){
-    rows.push([t.date,csvCell(guard(t.pair)),t.dir,t.result,t.r,(t.p===undefined?'':t.p),csvCell(guard(t.setup)),csvCell(guard(t.note))].join(','));
+    rows.push([t.date,csvCell(guard(t.pair)),t.dir,t.result,t.r,(t.p===undefined?'':t.p),csvCell(guard(acctName(t.a))),csvCell(guard(t.setup)),csvCell(guard(t.note))].join(','));
   });
   var blob=new Blob(['﻿'+rows.join('\r\n')],{type:'text/csv;charset=utf-8'});
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='qt-journal-'+today()+'.csv';
@@ -1128,21 +1422,30 @@ function importCSV(file){
     if(rows.length<2){toast('That CSV has no trade rows.');return;}
     var head=rows[0].map(function(h){return h.trim().toLowerCase();});
     function col(names){for(var k=0;k<names.length;k++){var ix=head.indexOf(names[k]);if(ix>-1)return ix;}return -1;}
-    var cD=col(['date']),cP=col(['pair','symbol']),cDir=col(['direction','dir','side']),cRes=col(['result','outcome']),cR=col(['r','rr','r multiple','r_multiple']),cP2=col(['pnl','p&l','profit','pl','usd','dollars']),cS=col(['setup','tag']),cN=col(['note','notes']);
+    var cD=col(['date']),cP=col(['pair','symbol']),cDir=col(['direction','dir','side']),cRes=col(['result','outcome']),cR=col(['r','rr','r multiple','r_multiple']),cP2=col(['pnl','p&l','profit','pl','usd','dollars']),cA=col(['account','acct']),cS=col(['setup','tag']),cN=col(['note','notes']);
     if(cD<0||cP<0||cRes<0){toast('CSV needs columns: date, pair, direction, result, r.');return;}
     var hadSample=trades.some(function(x){return x.s;});
     var base=trades.filter(function(x){return !x.s;});
-    var seen={};base.forEach(function(t){seen[[t.date,t.pair,t.dir,t.result,t.r,t.p,t.setup,t.note].join('|')]=1;});
-    var added=0,skipped=0;
+    var seen={};base.forEach(function(t){seen[[t.date,t.pair,t.dir,t.result,t.r,t.p,t.a,t.setup,t.note].join('|')]=1;});
+    var added=0,skipped=0,newAccts=[];
+    function acctFor(nm){
+      nm=unguard((nm||'').trim()).slice(0,30);if(!nm)return undefined;
+      var f=accts.find(function(a){return a.name.toLowerCase()===nm.toLowerCase();});
+      if(f)return f.id;
+      if(accts.length>=MAX_ACCTS)return undefined;
+      var na=cleanAcct({id:newId(),name:nm,type:'personal'});if(!na)return undefined;
+      accts.push(na);newAccts.push(na);return na.id;
+    }
     for(var k=1;k<rows.length;k++){
       var r=rows[k];
-      var t=cleanTrade({id:newId(),date:(r[cD]||'').trim(),pair:unguard((r[cP]||'').trim()),dir:cDir>-1?r[cDir]:'Long',result:r[cRes],r:cR>-1?r[cR]:0,p:cP2>-1?r[cP2]:'',setup:cS>-1?unguard((r[cS]||'').trim()):'',note:cN>-1?unguard((r[cN]||'').trim()):''});
+      var t=cleanTrade({id:newId(),date:(r[cD]||'').trim(),pair:unguard((r[cP]||'').trim()),dir:cDir>-1?r[cDir]:'Long',result:r[cRes],r:cR>-1?r[cR]:0,p:cP2>-1?r[cP2]:'',a:cA>-1?acctFor(r[cA]):undefined,setup:cS>-1?unguard((r[cS]||'').trim()):'',note:cN>-1?unguard((r[cN]||'').trim()):''});
       if(!t){skipped++;continue;}
-      var key=[t.date,t.pair,t.dir,t.result,t.r,t.p,t.setup,t.note].join('|');
+      var key=[t.date,t.pair,t.dir,t.result,t.r,t.p,t.a,t.setup,t.note].join('|');
       if(seen[key]){skipped++;continue;}
       if(base.length>=MAX_TRADES){skipped++;continue;}
       seen[key]=1;base.push(t);added++;
     }
+    if(newAccts.length){saveAccts();syncAcctUpsert(newAccts);}
     if(!added){toast('No new trades imported ('+skipped+' skipped).');return;}
     var prevIds={};trades.forEach(function(x){prevIds[x.id]=1;});
     trades=base;save();render();
@@ -1163,6 +1466,24 @@ function init(){
   box.addEventListener('click',function(){$('#fShot').click();});
   box.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#fShot').click();}});
   $('#fShot').addEventListener('change',function(e){if(e.target.files[0])takeFile(e.target.files[0]);e.target.value='';});
+  accts=loadAccts();
+  try{var sv=storageOK?localStorage.getItem(KEYSEL):null;if(sv&&(sv==='all'||acctById(sv)))acct=sv;}catch(e){}
+  $('#acctSel').addEventListener('change',function(){acct=this.value;saveSel();showAll=false;render();if(acct!=='all')$('#fAcct').value=acct;});
+  $('#btnAccts').addEventListener('click',function(){openAccts();});
+  $('#btnAccts2').addEventListener('click',function(){openAccts();});
+  $('#amClose').addEventListener('click',closeAccts);
+  $('#acctModal').addEventListener('click',function(e){if(e.target===this)closeAccts();});
+  $('#acForm').addEventListener('submit',submitAcct);
+  $('#acCancel').addEventListener('click',resetAcForm);
+  $('#acctList').addEventListener('click',function(e){
+    var ed=e.target.closest('[data-aedit]');if(ed){startEditAcct(ed.getAttribute('data-aedit'));return;}
+    var dl=e.target.closest('[data-adel]');if(dl)deleteAcct(dl.getAttribute('data-adel'));
+  });
+  $('#acctPanel').addEventListener('click',function(e){var b=e.target.closest('[data-editacct]');if(b)openAccts(b.getAttribute('data-editacct'));});
+  $('#edForm').addEventListener('submit',submitEdit);
+  $('#edClose').addEventListener('click',closeEdit);$('#edCancel').addEventListener('click',closeEdit);
+  $('#editModal').addEventListener('click',function(e){if(e.target===this)closeEdit();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeAccts();closeEdit();}});
   $('#chartModes').addEventListener('click',function(e){
     var b=e.target.closest('[data-mode]');if(!b)return;
     chartMode=b.getAttribute('data-mode');
@@ -1191,6 +1512,7 @@ function init(){
   });
   $('#logTable').addEventListener('click',function(e){
     var sh=e.target.closest('[data-shot]');if(sh){openShot(sh.getAttribute('data-shot'));return;}
+    var ed=e.target.closest('[data-edit]');if(ed){openEdit(ed.getAttribute('data-edit'));return;}
     var b=e.target.closest('[data-del]');if(b)deleteTrade(b.getAttribute('data-del'));
   });
   $('#btnMore').addEventListener('click',function(){showAll=!showAll;render();});
