@@ -607,7 +607,8 @@
   <div class="field" id="shNameWrap" style="margin-bottom:8px"><label class="lbl" for="shNameIn">Your name or handle</label><input class="inp" id="shNameIn" maxlength="24" placeholder="e.g. @yourhandle"></div>
   <div class="sharewrap"><canvas id="shCanvas" width="1080" height="1350" aria-label="Preview of your stats card"></canvas></div>
   <div class="mmsg" id="shMsg" role="status"></div>
-  <div class="macts"><button class="btn btn-primary" type="button" id="shDl">Download image</button><button class="btn btn-ghost" type="button" id="shShare" hidden>Share…</button></div>
+  <div class="macts"><button class="btn btn-primary" type="button" id="shDl">Download image</button><button class="btn btn-ghost" type="button" id="shCopy">Copy image</button><button class="btn btn-ghost" type="button" id="shShare" hidden>Share…</button></div>
+  <p class="hint" style="margin-top:10px">For Discord: tap <b>Copy image</b>, open the channel and paste (Ctrl+V on computer, long-press → Paste on phone).</p>
 </div></div>
 <div id="lightbox" role="dialog" aria-modal="true" aria-label="Trade screenshot"><button class="x" type="button" id="lbX" aria-label="Close">×</button><img id="lbImg" alt="Trade chart screenshot"><div class="cap" id="lbCap"></div></div>
 <div id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button type="button" id="toastBtn" hidden></button></div>
@@ -1455,6 +1456,14 @@ function shareDownload(){
     setTimeout(function(){URL.revokeObjectURL(u);},2000);toast('Image saved.');
   });
 }
+function shareCopy(){
+  var m=$('#shMsg');m.style.color='var(--green)';
+  if(!(navigator.clipboard&&window.ClipboardItem)){m.style.color='var(--red)';m.textContent='Copy is not supported in this browser. Use Download image instead.';return;}
+  shareBlob(function(b){
+    if(!b){m.style.color='var(--red)';m.textContent='Could not create the image.';return;}
+    navigator.clipboard.write([new ClipboardItem({'image/png':b})]).then(function(){m.textContent='Image copied. Now paste it in Discord.';toast('Image copied. Paste it in Discord.');},function(){m.style.color='var(--red)';m.textContent='Copy was blocked. Use Download image instead.';});
+  });
+}
 function shareNative(){
   shareBlob(function(b){
     if(!b)return;
@@ -1648,6 +1657,7 @@ function init(){
   $('#shNameIn').addEventListener('input',function(){try{if(storageOK)localStorage.setItem(SHN,this.value.trim());}catch(e){}drawShare();});
   $('#shDl').addEventListener('click',shareDownload);
   $('#shShare').addEventListener('click',shareNative);
+  $('#shCopy').addEventListener('click',shareCopy);
   $('#edForm').addEventListener('submit',submitEdit);
   $('#edClose').addEventListener('click',closeEdit);$('#edCancel').addEventListener('click',closeEdit);
   $('#editModal').addEventListener('click',function(e){if(e.target===this)closeEdit();});
